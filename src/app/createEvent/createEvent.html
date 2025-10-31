@@ -1,0 +1,80 @@
+<app-toast></app-toast>
+<div class="events-container">
+  <h2>Event Management</h2>
+
+  <!-- Add Event Form -->
+  <div class="event-form">
+    <h3>Add New Event</h3>
+    <div class="form-group">
+      <input type="text" placeholder="Event Name" [(ngModel)]="name" />
+    </div>
+    <div class="form-group">
+      <input type="text" placeholder="Location" [(ngModel)]="location" />
+    </div>
+    <div class="form-group">
+      <input type="datetime-local" placeholder="Event Date" [(ngModel)]="date" />
+    </div>
+    <div class="form-group">
+      <input type="text" placeholder="Description" [(ngModel)]="description" />
+    </div>
+    <div class="form-group">
+      <select id="venue" [(ngModel)]="venueId">
+        <option [ngValue]="undefined">-- Select venue (Optional) --</option>
+        @for (v of venues; track v.id) {
+          <option [value]="v.id">{{ v.name }} - {{ v.address || '' }}</option>
+        }
+      </select>
+    </div>
+    <button (click)="addEvent()">Add Event</button>
+  </div>
+
+  <!-- Events List -->
+  <div class="events-list">
+    <h3>Events</h3>
+    @if (errorMessage) {
+      <div class="error-message">
+        <div>
+          <strong>Error:</strong>
+          <pre>{{ errorMessage }}</pre>
+        </div>
+        <button (click)="loadEvents()">Retry</button>
+      </div>
+    }
+    @if (isLoading) {
+      <p class="loading">Loading...</p>
+    } @else if (events.length === 0) {
+      <p>No events found. Add one above!</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Venue</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of events; track event.id) {
+            <tr>
+              <td>{{ event.id }}</td>
+              <td>{{ event.name }}</td>
+              <td>{{ event.location || 'N/A' }}</td>
+              <td>{{ event.date | date:'short' }}</td>
+              <td>{{ event.description || 'N/A' }}</td>
+              <td>{{ event.venue?.name || 'N/A' }}</td>
+              <td>
+                <button (click)="deleteEvent(event.id)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+
