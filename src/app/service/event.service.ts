@@ -47,7 +47,7 @@ export interface ApiResponse<T> {
 })
 export class EventService {
   // Base API URL for events backend
-  private readonly apiUrl = 'http://localhost:8080/api/events';
+  private readonly apiUrl = 'https://eventhub-nx.onrender.com/api/events';
 
   constructor(private readonly http: HttpClient) { }
 
@@ -90,7 +90,7 @@ export class EventService {
   // Get all venues
   getVenues(): Observable<Venue[]> {
     // assume backend exposes /api/venues and wraps responses in { data: [...] }
-    return this.http.get<{ data: Venue[] }>('http://localhost:8080/api/venues').pipe(
+    return this.http.get<{ data: Venue[] }>('https://eventhub-nx.onrender.com/api/venues').pipe(
       map(r => r.data)
     );
   }
