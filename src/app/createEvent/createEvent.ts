@@ -79,71 +79,47 @@ export class CreateEventComponent {
     // Clear previous field errors
     this.fieldErrors = {};
 
-    // Validate required fields
-    const missingFields: string[] = [];
-    if (!this.name || this.name.trim() === '') {
-      this.fieldErrors['name'] = 'Name is required';
-      missingFields.push('Name');
-    }
-    if (!this.location || this.location.trim() === '') {
-      this.fieldErrors['location'] = 'Location is required';
-      missingFields.push('Location');
-    }
-    if (!this.date || this.date.trim() === '') {
-      this.fieldErrors['date'] = 'Date is required';
-      missingFields.push('Date');
-    }
+    // Attempt to create the event, letting the API validate required fields
+    this.isLoading = true;
+    this.errorMessage = '';
+    console.log('➕ Creating event...');
+    this.eventService.create({
+      name: this.name,
+      location: this.location,
+      date: this.date,
+      description: this.description,
+      venueId: this.venueId
+    }).subscribe({
+      next: (event) => {
+        console.log('✅ Event created:', event);
+        this.events.push(event);
+        this.toast?.success(`Event "${event.name}" created successfully!`);
+        // Reset form
+        this.name = "";
+        this.location = "";
+        this.date = "";
+        this.description = "";
+        this.venueId = undefined;
+        this.fieldErrors = {};
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('❌ Error creating event:', err);
+        const errorMsg = this.formatError(err);
+        this.errorMessage = errorMsg;
+        this.toast?.error(errorMsg);
 
-    // If there are missing fields, show error and stop
-    if (missingFields.length > 0) {
-      const errorMsg = `Please fill in the following required fields:\n• ${missingFields.join('\n• ')}`;
-      this.toast?.warning(errorMsg);
-      console.warn('⚠️ Form incomplete:', missingFields);
-      return;
-    }
-
-    if (this.name && this.location && this.date) {
-      this.isLoading = true;
-      this.errorMessage = '';
-      console.log('➕ Creating event...');
-      this.eventService.create({
-        name: this.name,
-        location: this.location,
-        date: this.date,
-        description: this.description,
-        venueId: this.venueId
-      }).subscribe({
-        next: (event) => {
-          console.log('✅ Event created:', event);
-          this.events.push(event);
-          this.toast?.success(`Event "${event.name}" created successfully!`);
-          // Reset form
-          this.name = "";
-          this.location = "";
-          this.date = "";
-          this.description = "";
-          this.venueId = undefined;
-          this.fieldErrors = {};
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('❌ Error creating event:', err);
-          const errorMsg = this.formatError(err);
-          this.errorMessage = errorMsg;
-          this.toast?.error(errorMsg);
-
-          // Map backend field errors to form fields
-          if (err?.error?.errors && Array.isArray(err.error.errors)) {
-            for (const e of err.error.errors) {
-              this.fieldErrors[e.field] = e.message;
-            }
+        // Map backend field errors to form fields
+        if (err?.error?.errors && Array.isArray(err.error.errors)) {
+          for (const e of err.error.errors) {
+            this.fieldErrors[e.field] = e.message;
           }
-
-          console.log('💬 Error message set to:', this.errorMessage);
-          this.isLoading = false;
         }
-      });
-    }
+
+        console.log('💬 Error message set to:', this.errorMessage);
+        this.isLoading = false;
+      }
+    });
   }
 
   deleteEvent(id: number | undefined) {

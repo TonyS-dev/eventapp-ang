@@ -95,11 +95,13 @@ export class EventService {
     );
   }
 
-  // Simple ping to check backend availability. Tries /actuator/health then falls back to /api/events
+  // Simple ping to check backend availability using /api/events
   ping(): Observable<{ ok: boolean; message?: string }> {
-    const healthUrl = 'http://localhost:8080/actuator/health';
-    return this.http.get<any>(healthUrl).pipe(
-      map(() => ({ ok: true })),
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(() => ({
+        ok: true,
+        message: 'Backend reachable'
+      })),
     );
   }
 }
