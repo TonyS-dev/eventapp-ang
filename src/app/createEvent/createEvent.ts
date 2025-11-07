@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { EventService, Event, Venue } from '../service/event.service';
+import { EventService, EventData, VenueData } from '../service/event.service';
 import { ToastComponent } from '../shared/toast.component';
 
 @Component({
@@ -18,8 +18,8 @@ export class CreateEventComponent {
   date: string = "";
   description: string = "";
   venueId: number | undefined;
-  events: Event[] = [];
-  venues: Venue[] = [];
+  events: EventData[] = [];
+  venues: VenueData[] = [];
   isLoading: boolean = false;
   errorMessage: string = '';
 

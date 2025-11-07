@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 // Event model matching backend EventResponse
-export interface Event {
+export interface EventData {
   id?: number;
   name: string;
   location: string;
@@ -28,7 +28,7 @@ export interface EventRequest {
 }
 
 // Venue model returned by backend
-export interface Venue {
+export interface VenueData {
   id: number;
   name: string;
   address?: string;
@@ -52,29 +52,29 @@ export class EventService {
   constructor(private readonly http: HttpClient) { }
 
   // Get all events
-  getAll(): Observable<Event[]> {
-    return this.http.get<{ data: Event[] }>(this.apiUrl).pipe(
+  getAll(): Observable<EventData[]> {
+    return this.http.get<{ data: EventData[] }>(this.apiUrl).pipe(
       map(response => response.data)
     );
   }
 
   // Get a single event by ID
-  getById(id: number): Observable<Event> {
-    return this.http.get<{ data: Event }>(`${this.apiUrl}/${id}`).pipe(
+  getById(id: number): Observable<EventData> {
+    return this.http.get<{ data: EventData }>(`${this.apiUrl}/${id}`).pipe(
       map(r => r.data)
     );
   }
 
   // Create a new event
-  create(event: EventRequest): Observable<Event> {
-    return this.http.post<{ data: Event }>(this.apiUrl, event).pipe(
+  create(event: EventRequest): Observable<EventData> {
+    return this.http.post<{ data: EventData }>(this.apiUrl, event).pipe(
       map(r => r.data)
     );
   }
 
   // Update an existing event
-  update(id: number, event: EventRequest): Observable<Event> {
-    return this.http.put<{ data: Event }>(`${this.apiUrl}/${id}`, event).pipe(
+  update(id: number, event: EventRequest): Observable<EventData> {
+    return this.http.put<{ data: EventData }>(`${this.apiUrl}/${id}`, event).pipe(
       map(r => r.data)
     );
   }
@@ -88,9 +88,9 @@ export class EventService {
   }
 
   // Get all venues
-  getVenues(): Observable<Venue[]> {
+  getVenues(): Observable<VenueData[]> {
     // assume backend exposes /api/venues and wraps responses in { data: [...] }
-    return this.http.get<{ data: Venue[] }>('https://eventhub-nx.onrender.com/api/venues').pipe(
+    return this.http.get<{ data: VenueData[] }>('https://eventhub-nx.onrender.com/api/venues').pipe(
       map(r => r.data)
     );
   }

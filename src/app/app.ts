@@ -8,5 +8,5 @@ import { RouterOutlet, RouterLinkActive, RouterLink } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('mi-proyecto');
+  protected readonly title = signal('event-app-ang');
 }
